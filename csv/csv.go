@@ -13,7 +13,7 @@ import (
 
 type Line struct {
 	IP                  net.IP
-	Network             *net.IPNet
+	network             *net.IPNet
 	Geolocation_id      string
 	City_name           string
 	State_name          string
@@ -22,6 +22,10 @@ type Line struct {
 	Country_code_alpha3 string
 	Location            *Location
 	Score               float32
+}
+
+func (l Line) Network() net.IPNet {
+	return *l.network
 }
 
 type Location struct {
@@ -62,7 +66,7 @@ func (c *CVS) Value() (Line, error) {
 		Country_code_alpha3: values[6],
 	}
 	var err error
-	l.IP, l.Network, err = net.ParseCIDR(values[0])
+	l.IP, l.network, err = net.ParseCIDR(values[0])
 	if err != nil {
 		return l, err
 	}
