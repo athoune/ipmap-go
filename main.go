@@ -51,8 +51,12 @@ func main() {
 					log.Printf("[%s] : %s\n", line, err)
 					return
 				}
-				for _, network := range containingNetworks {
-					fmt.Fprintf(conn, "%s\n", network)
+				if len(containingNetworks) == 0 {
+					fmt.Fprintf(conn, "%s => nope\n", line)
+				} else {
+					for _, network := range containingNetworks {
+						fmt.Fprintf(conn, "%s => %s\n", line, network)
+					}
 				}
 			}
 		}(conn)
