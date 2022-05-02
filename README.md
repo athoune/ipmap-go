@@ -1,6 +1,6 @@
 # IPmap
 
-Expose https://ipmap.ripe.net/docs/01.manual/#full-dumps with https://golangexample.com/fast-ip-to-cidr-lookup-in-golang/
+Expose https://ipmap.ripe.net/docs/01.manual/#full-dumps with https://github.com/athoune/iptree
 
 ## Test it
 

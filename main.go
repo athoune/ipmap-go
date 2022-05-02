@@ -8,12 +8,14 @@ import (
 	"net"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/athoune/ipmap-go/csv"
 	"github.com/athoune/ipmap-go/ipmap"
 )
 
 func main() {
+	chrono := time.Now()
 	f, err := os.Open(os.Args[1])
 	if err != nil {
 		panic(err)
@@ -23,7 +25,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("file read, lets search")
+	fmt.Printf("%d lines read in %v, lets search\n", ranges.Length(), time.Now().Sub(chrono))
 
 	listen, err := net.Listen("tcp", "0.0.0.0:1234")
 	if err != nil {
@@ -46,17 +48,13 @@ func main() {
 				if line == "" {
 					continue
 				}
-				containingNetworks, err := ranges.Ranger.ContainingNetworks(net.ParseIP(line))
-				if err != nil {
-					log.Printf("[%s] : %s\n", line, err)
-					return
-				}
-				if len(containingNetworks) == 0 {
+				chrono := time.Now()
+				containingNetworks, ok := ranges.Tree.Get(net.ParseIP(line))
+				log.Printf("%v", time.Now().Sub(chrono))
+				if !ok {
 					fmt.Fprintf(conn, "%s => nope\n", line)
 				} else {
-					for _, network := range containingNetworks {
-						fmt.Fprintf(conn, "%s => %s\n", line, network)
-					}
+					fmt.Fprintf(conn, "%s %v\n", line, containingNetworks)
 				}
 			}
 		}(conn)
